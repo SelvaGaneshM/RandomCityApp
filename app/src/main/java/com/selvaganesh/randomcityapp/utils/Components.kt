@@ -27,6 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.selvaganesh.randomcityapp.dataset.cities
+import com.selvaganesh.randomcityapp.dataset.cityDataSource
 import com.selvaganesh.randomcityapp.landing.LandingScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,12 +59,16 @@ fun CustomToolbar(title: String, onClick: () -> Unit, color: Color, callback: ()
         if (countDownStarted) {
             landingScreenViewModel.countDownFlow.collect {
                 if (it.isNotEmpty())
-                    if (it == "00") {
+                    if (cityDataSource.size < cities.size) {
+                        if (it == "00") {
+                            timeInSec = "00"
+                            landingScreenViewModel.startCountDown(5)
+                            callback.invoke()
+                        } else
+                            timeInSec = it
+                    } else {
                         timeInSec = "00"
-                        landingScreenViewModel.startCountDown(5)
-                        callback.invoke()
-                    } else
-                        timeInSec = it
+                    }
             }
         }
     }

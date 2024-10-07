@@ -37,10 +37,10 @@ fun LandingScreen() {
     Column(
         modifier = Modifier.statusBarsPadding()
     ) {
-        CustomToolbar("Main", onClick = {
+        CustomToolbar("LandingScreen", onClick = {
 
         }, Color.Blue, callback = {
-            if (notify.value.size <= cities.size)
+            if (notify.value.size < cities.size)
                 notify.value += addCity(notify.value.size)
         })
         Box(

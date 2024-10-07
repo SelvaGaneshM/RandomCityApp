@@ -13,12 +13,6 @@ val cities = listOf(
 )
 val colors = listOf("Yellow", "White", "Green", "Blue", "Red", "Black")
 
-fun addingCities(): ArrayList<CityDataSource> {
-    var citiesCount: Int = getCityData().size
-    if (citiesCount <= cities.size) addCity(pickValue = citiesCount++)
-    return cityDataSource
-}
-
 fun addCity(pickValue: Int): CityDataSource {
     var dataSetCity = CityDataSource(cities[pickValue], colors.random(), getDate())
     cityDataSource.add(dataSetCity)

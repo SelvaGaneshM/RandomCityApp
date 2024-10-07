@@ -18,7 +18,6 @@ class LandingScreenViewModel @Inject constructor() : ViewModel() {
     private val _countDownFlow = MutableStateFlow<String>("")
     val countDownFlow: StateFlow<String> = _countDownFlow.asStateFlow()
 
-
     init {
         startCountDown(5)
     }
