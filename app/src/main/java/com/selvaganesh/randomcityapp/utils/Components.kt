@@ -1,5 +1,6 @@
 package com.selvaganesh.randomcityapp.utils
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -83,7 +85,7 @@ fun CustomToolbar(
             timeInSec = ""
         }
     }
-    val seconds = if(timeInSec.isNotEmpty())  "$timeInSec s" else ""
+    val seconds = if (timeInSec.isNotEmpty()) "$timeInSec s" else ""
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -144,4 +146,15 @@ fun MapScreen() {
         properties = properties,
         uiSettings = uiSettings
     )
+}
+
+@Composable
+fun isTablet(): Boolean {
+    return (LocalContext.current?.resources?.configuration?.smallestScreenWidthDp!! >= 600)
+}
+
+@Composable
+fun isLandscape(): Boolean {
+    return (LocalContext.current?.getResources()
+        ?.getConfiguration()?.orientation === Configuration.ORIENTATION_LANDSCAPE)
 }

@@ -10,8 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -28,12 +29,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import com.selvaganesh.randomcityapp.dataset.CityDataSource
 import com.selvaganesh.randomcityapp.dataset.addCity
 import com.selvaganesh.randomcityapp.dataset.cities
 import com.selvaganesh.randomcityapp.utils.CustomToolbar
+import com.selvaganesh.randomcityapp.utils.isLandscape
+import com.selvaganesh.randomcityapp.utils.isTablet
 
 @Composable
 fun LandingScreen(navController: NavController) {
@@ -81,9 +82,7 @@ fun UserCard(item: CityDataSource, navController: NavController) {
             modifier = Modifier.padding(5.dp)
         ) {
             Text(
-                text = item.cityName,
-                modifier = Modifier.padding(10.dp, 20.dp),
-                color = Color.White
+                text = item.cityName, modifier = Modifier.padding(10.dp, 20.dp), color = Color.White
             )
             Spacer(Modifier.weight(1f))
             Text(
@@ -97,10 +96,12 @@ fun UserCard(item: CityDataSource, navController: NavController) {
 
 @Composable
 fun RecyclerView(cityData: List<CityDataSource>, navController: NavController) {
-    LazyColumn {
-        cityData
-        items(items = cityData) {
-            UserCard(it, navController)
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(if (isTablet() && isLandscape()) 2 else 1),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        items(cityData) { item ->
+            UserCard(item, navController)
         }
     }
 }
@@ -110,3 +111,4 @@ fun RecyclerView(cityData: List<CityDataSource>, navController: NavController) {
 fun LandingScreenPreview() {
     LandingScreen(navController = NavController(context = LocalContext.current))
 }
+
