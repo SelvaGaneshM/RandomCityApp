@@ -1,17 +1,18 @@
 package com.selvaganesh.randomcityapp.dataset
 
+import androidx.compose.ui.graphics.Color
 import java.text.SimpleDateFormat
 import java.util.Date
 
 data class CityDataSource(
-    var cityName: String, var randomColor: String, var dateTimeStamp: String
+    var cityName: String, var color: Color, var dateTimeStamp: String
 )
 
 var cityDataSource: ArrayList<CityDataSource> = arrayListOf()
 val cities = listOf(
     "New York", "Los Angeles", "Scranton", "Philadelphia", "Nashville", "Saint Louis", "Miami"
 )
-val colors = listOf("Yellow", "White", "Green", "Blue", "Red", "Black")
+val colors = listOf(Color.Yellow, Color.White, Color.Green, Color.Blue, Color.Red, Color.Black)
 
 fun addCity(pickValue: Int): CityDataSource {
     var dataSetCity = CityDataSource(cities[pickValue], colors.random(), getDate())
@@ -24,7 +25,7 @@ fun getCityData(): ArrayList<CityDataSource> {
 }
 
 private fun getDate(): String {
-    val sdf = SimpleDateFormat("dd/M/yyyy hh:mm")
+    val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
     val currentDate = sdf.format(Date())
     return currentDate
 }

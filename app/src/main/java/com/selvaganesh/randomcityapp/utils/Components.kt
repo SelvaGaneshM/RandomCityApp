@@ -27,6 +27,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapType
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.rememberCameraPositionState
 import com.selvaganesh.randomcityapp.dataset.cities
 import com.selvaganesh.randomcityapp.dataset.cityDataSource
 import com.selvaganesh.randomcityapp.landing.LandingScreenViewModel
@@ -34,45 +41,49 @@ import com.selvaganesh.randomcityapp.landing.LandingScreenViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DefaultToolbar(title: String, onClick: () -> Unit) {
-    TopAppBar(
-        title = {
-            Text(text = title)
-        },
+    TopAppBar(title = {
+        Text(text = title)
+    },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Cyan),
         navigationIcon = {
             IconButton(onClick = { onClick() }) {
                 Icon(imageVector = Icons.Filled.KeyboardArrowLeft, contentDescription = "Menu Btn")
             }
-        }
-    )
+        })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomToolbar(title: String, onClick: () -> Unit, color: Color, callback: () -> Unit) {
+fun CustomToolbar(
+    title: String,
+    isCountDownRequired: Boolean,
+    onClick: () -> Unit,
+    color: Color,
+    callback: () -> Unit
+) {
 
     val landingScreenViewModel: LandingScreenViewModel = viewModel()
     var timeInSec by remember { mutableStateOf("") }
     val countDownStarted by remember { mutableStateOf(true) }
 
     LaunchedEffect(countDownStarted) {
-        if (countDownStarted) {
+        if (countDownStarted && isCountDownRequired) {
             landingScreenViewModel.countDownFlow.collect {
-                if (it.isNotEmpty())
-                    if (cityDataSource.size < cities.size) {
-                        if (it == "00") {
-                            timeInSec = "00"
-                            landingScreenViewModel.startCountDown(5)
-                            callback.invoke()
-                        } else
-                            timeInSec = it
-                    } else {
+                if (it.isNotEmpty()) if (cityDataSource.size < cities.size) {
+                    if (it == "00") {
                         timeInSec = "00"
-                    }
+                        landingScreenViewModel.startCountDown(5)
+                        callback.invoke()
+                    } else timeInSec = it
+                } else {
+                    timeInSec = "00"
+                }
             }
+        } else {
+            timeInSec = ""
         }
     }
-
+    val seconds = if(timeInSec.isNotEmpty())  "$timeInSec s" else ""
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -81,8 +92,7 @@ fun CustomToolbar(title: String, onClick: () -> Unit, color: Color, callback: ()
             .background(color = color)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = { onClick() }) {
                 Icon(
@@ -92,14 +102,11 @@ fun CustomToolbar(title: String, onClick: () -> Unit, color: Color, callback: ()
                 )
             }
             Text(
-                text = title,
-                color = Color.White
+                text = title, color = Color.White
             )
             Spacer(Modifier.weight(1f))
             Text(
-                text = "$timeInSec s",
-                color = Color.White,
-                modifier = Modifier.padding(end = 2.dp)
+                text = "$seconds", color = Color.White, modifier = Modifier.padding(end = 2.dp)
             )
         }
     }
@@ -108,5 +115,33 @@ fun CustomToolbar(title: String, onClick: () -> Unit, color: Color, callback: ()
 @Preview
 @Composable
 fun CustomToolbarPreview() {
-    CustomToolbar("Main Preview", onClick = {}, Color.Blue, callback = {})
+    CustomToolbar("Main Preview", false, onClick = {}, Color.Blue, callback = {})
+}
+
+@Preview
+@Composable
+fun MapPreview() {
+    MapScreen()
+}
+
+@Composable
+fun MapScreen() {
+    val atasehir = LatLng(40.9971, 29.1007)
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(atasehir, 15f)
+    }
+
+    var uiSettings by remember {
+        mutableStateOf(MapUiSettings(zoomControlsEnabled = true))
+    }
+    var properties by remember {
+        mutableStateOf(MapProperties(mapType = MapType.SATELLITE))
+    }
+
+    GoogleMap(
+        modifier = Modifier.fillMaxWidth(),
+        cameraPositionState = cameraPositionState,
+        properties = properties,
+        uiSettings = uiSettings
+    )
 }

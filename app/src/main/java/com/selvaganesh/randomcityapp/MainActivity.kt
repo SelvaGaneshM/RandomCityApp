@@ -1,7 +1,6 @@
 package com.selvaganesh.randomcityapp
 
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.selvaganesh.randomcityapp.detailed.DetailedScreen
 import com.selvaganesh.randomcityapp.landing.LandingScreen
 import com.selvaganesh.randomcityapp.splash.SplashScreen
 
@@ -36,9 +36,12 @@ fun Navigation() {
             SplashScreen(navController = navController)
         }
 
-        // Main Screen
         composable("main_screen") {
-            LandingScreen()
+            LandingScreen(navController = navController)
+        }
+
+        composable("detailed_screen") {
+            DetailedScreen(navController = navController)
         }
     }
 }

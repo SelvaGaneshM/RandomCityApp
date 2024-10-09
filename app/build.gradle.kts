@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.androidx.viewmodelCompose)
     implementation(libs.androidx.coroutines)
     implementation(libs.androidx.navigation)
+    implementation(libs.google.maps)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

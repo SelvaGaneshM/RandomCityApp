@@ -1,5 +1,6 @@
 package com.selvaganesh.randomcityapp.landing
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,67 +19,88 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.os.bundleOf
+import androidx.navigation.NavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.selvaganesh.randomcityapp.dataset.CityDataSource
 import com.selvaganesh.randomcityapp.dataset.addCity
 import com.selvaganesh.randomcityapp.dataset.cities
 import com.selvaganesh.randomcityapp.utils.CustomToolbar
 
 @Composable
-fun LandingScreen() {
+fun LandingScreen(navController: NavController) {
 
-    val notify = remember { mutableStateOf(emptyList<CityDataSource>()) }
+    val notify = rememberSaveable { mutableStateOf(emptyList<CityDataSource>()) }
 
     Column(
         modifier = Modifier.statusBarsPadding()
     ) {
-        CustomToolbar("LandingScreen", onClick = {
+        CustomToolbar("LandingScreen", true, onClick = {
 
         }, Color.Blue, callback = {
-            if (notify.value.size < cities.size)
-                notify.value += addCity(notify.value.size)
+            if (notify.value.size < cities.size) notify.value += addCity(notify.value.size)
         })
         Box(
             modifier = Modifier
                 .padding(5.dp)
                 .fillMaxSize(), contentAlignment = Alignment.TopStart
         ) {
-            RecyclerView(cityData = notify.value)
+            RecyclerView(cityData = notify.value, navController)
         }
     }
 }
 
 @Composable
-fun UserCard(userDetail: String, userDetails: String) {
+fun UserCard(item: CityDataSource, navController: NavController) {
     Card(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 5.dp)
             .fillMaxWidth()
-            .wrapContentSize(),
+            .wrapContentSize()
+            .clickable(onClick = {
+                val bundle = bundleOf("amount" to "amount")
+                navController.navigate("detailed_screen")
+            }),
+        colors = CardDefaults.cardColors(
+            containerColor = item.color
+        ),
         shape = RoundedCornerShape(CornerSize(10.dp)),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 4.dp
         ),
     ) {
-        Row(modifier = Modifier.padding(5.dp)) {
-            Text(text = userDetail, modifier = Modifier.padding(10.dp, 20.dp))
+        Row(
+            modifier = Modifier.padding(5.dp)
+        ) {
+            Text(
+                text = item.cityName,
+                modifier = Modifier.padding(10.dp, 20.dp),
+                color = Color.White
+            )
             Spacer(Modifier.weight(1f))
-            Text(text = userDetails, modifier = Modifier.padding(10.dp, 20.dp))
+            Text(
+                text = item.dateTimeStamp,
+                modifier = Modifier.padding(10.dp, 20.dp),
+                color = Color.White
+            )
         }
     }
 }
 
 @Composable
-fun RecyclerView(cityData: List<CityDataSource>) {
+fun RecyclerView(cityData: List<CityDataSource>, navController: NavController) {
     LazyColumn {
         cityData
         items(items = cityData) {
-            UserCard(it.cityName, it.dateTimeStamp)
+            UserCard(it, navController)
         }
     }
 }
@@ -86,5 +108,5 @@ fun RecyclerView(cityData: List<CityDataSource>) {
 @Preview
 @Composable
 fun LandingScreenPreview() {
-    LandingScreen()
+    LandingScreen(navController = NavController(context = LocalContext.current))
 }
