@@ -1,11 +1,15 @@
 package com.selvaganesh.randomcityapp.detailed
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.selvaganesh.randomcityapp.common.BaseResult
 import com.selvaganesh.randomcityapp.dataset.mapDomain.entity.GoogleMapsEntity
 import com.selvaganesh.randomcityapp.dataset.mapDomain.usecase.GoogleMapUseCase
+import com.selvaganesh.randomcityapp.db.DatabaseBuilder
+import com.selvaganesh.randomcityapp.db.data.CountryData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -14,12 +18,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailedScreenViewModel @Inject constructor(private val googleMapUseCase: GoogleMapUseCase) :
-    ViewModel() {
+class DetailedScreenViewModel @Inject constructor(
+    @ApplicationContext context: Context, private val googleMapUseCase: GoogleMapUseCase
+) : ViewModel() {
 
     private val _dataSet = MutableStateFlow<GoogleMapsEntity?>(null)
     val dataSet get() = _dataSet.asStateFlow()
-
+    val countryDatabase = DatabaseBuilder.getDatabase(context = context)
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading get() = _isLoading.asStateFlow()
 
@@ -31,6 +36,13 @@ class DetailedScreenViewModel @Inject constructor(private val googleMapUseCase: 
 
                     is BaseResult.Success -> {
                         _dataSet.value = it.data
+                        countryDatabase.countryDao().insertAll(
+                            CountryData(
+                                cityName = countryName,
+                                lat = it.data.lat,
+                                lng = it.data.lng
+                            )
+                        )
                         _isLoading.value = false
                     }
 

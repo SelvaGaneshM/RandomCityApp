@@ -65,6 +65,9 @@ dependencies {
     implementation(libs.squareup.okhttp.logging)
     implementation(libs.squareup.retrofit)
     implementation(libs.squareup.retrofit.gson)
+    implementation(libs.room.runtime)
+    kapt(libs.room.compiler)
+    implementation(libs.room.ktx)
 
 
     testImplementation(libs.junit)
