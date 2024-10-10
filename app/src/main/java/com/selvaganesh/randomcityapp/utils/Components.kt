@@ -35,9 +35,12 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.selvaganesh.randomcityapp.dataset.cities
 import com.selvaganesh.randomcityapp.dataset.cityDataSource
+import com.selvaganesh.randomcityapp.dataset.mapDomain.entity.GoogleMapsEntity
 import com.selvaganesh.randomcityapp.landing.LandingScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -123,21 +126,21 @@ fun CustomToolbarPreview() {
 @Preview
 @Composable
 fun MapPreview() {
-    MapScreen()
+    MapScreen(GoogleMapsEntity("40.9971", "29.1007"), "Chennai")
 }
 
 @Composable
-fun MapScreen() {
-    val atasehir = LatLng(40.9971, 29.1007)
+fun MapScreen(countryAPIResponse: GoogleMapsEntity, cityName: String?) {
+    val atasehir = LatLng(countryAPIResponse.lat!!.toDouble(), countryAPIResponse.lng!!.toDouble())
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(atasehir, 15f)
+        position = CameraPosition.fromLatLngZoom(atasehir, 10f)
     }
 
     var uiSettings by remember {
         mutableStateOf(MapUiSettings(zoomControlsEnabled = true))
     }
     var properties by remember {
-        mutableStateOf(MapProperties(mapType = MapType.SATELLITE))
+        mutableStateOf(MapProperties(mapType = MapType.NORMAL))
     }
 
     GoogleMap(
@@ -145,7 +148,13 @@ fun MapScreen() {
         cameraPositionState = cameraPositionState,
         properties = properties,
         uiSettings = uiSettings
-    )
+    ) {
+        Marker(
+            state = MarkerState(position = atasehir),
+            title = cityName,
+            snippet = "Marker for $cityName"
+        )
+    }
 }
 
 @Composable

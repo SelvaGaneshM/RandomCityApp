@@ -25,8 +25,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -60,6 +59,13 @@ dependencies {
     implementation(libs.androidx.coroutines)
     implementation(libs.androidx.navigation)
     implementation(libs.google.maps)
+    implementation(libs.activity.ktx)
+    implementation(platform(libs.squareup.okhttp.bom))
+    implementation(libs.squareup.okhttp)
+    implementation(libs.squareup.okhttp.logging)
+    implementation(libs.squareup.retrofit)
+    implementation(libs.squareup.retrofit.gson)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

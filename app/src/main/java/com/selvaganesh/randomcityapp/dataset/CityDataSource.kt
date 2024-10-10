@@ -1,12 +1,13 @@
 package com.selvaganesh.randomcityapp.dataset
 
 import androidx.compose.ui.graphics.Color
+import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.Date
 
 data class CityDataSource(
     var cityName: String, var color: Color, var dateTimeStamp: String
-)
+) : Serializable
 
 var cityDataSource: ArrayList<CityDataSource> = arrayListOf()
 val cities = listOf(

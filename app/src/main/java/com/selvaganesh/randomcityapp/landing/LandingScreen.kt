@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import com.selvaganesh.randomcityapp.dataset.CityDataSource
 import com.selvaganesh.randomcityapp.dataset.addCity
@@ -67,7 +66,7 @@ fun UserCard(item: CityDataSource, navController: NavController) {
             .fillMaxWidth()
             .wrapContentSize()
             .clickable(onClick = {
-                val bundle = bundleOf("amount" to "amount")
+                navController.currentBackStackEntry?.savedStateHandle?.set("countryDetails", item)
                 navController.navigate("detailed_screen")
             }),
         colors = CardDefaults.cardColors(
