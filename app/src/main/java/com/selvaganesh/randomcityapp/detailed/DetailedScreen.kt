@@ -49,6 +49,7 @@ fun DetailedScreen(navController: NavController, viewModel: DetailedScreenViewMo
                 .fillMaxSize(), contentAlignment = Alignment.TopStart
         ) {
             dataSet?.let {
+                viewModel.insertData(countryDetails?.cityName,it)
                 MapScreen(it,countryDetails?.cityName)
             }
         }

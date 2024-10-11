@@ -36,13 +36,6 @@ class DetailedScreenViewModel @Inject constructor(
 
                     is BaseResult.Success -> {
                         _dataSet.value = it.data
-                        countryDatabase.countryDao().insertAll(
-                            CountryData(
-                                cityName = countryName,
-                                lat = it.data.lat,
-                                lng = it.data.lng
-                            )
-                        )
                         _isLoading.value = false
                     }
 
@@ -51,6 +44,21 @@ class DetailedScreenViewModel @Inject constructor(
                     }
                 }
             }.launchIn(viewModelScope)
+        }
+    }
+
+    fun insertData(cityName: String?, googleMapsEntity: GoogleMapsEntity) {
+        viewModelScope.launch {
+            cityName?.let {
+                countryDatabase.countryDao().insertAll(
+                    CountryData(
+                        cityName = cityName,
+                        lat = googleMapsEntity.lat,
+                        lng = googleMapsEntity.lng
+                    )
+                )
+                //Log.d("DB", "insertData: ${countryDatabase.countryDao().getAll()}")
+            }
         }
     }
 }
