@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.selvaganesh.randomcityapp.common.Constants
 import com.selvaganesh.randomcityapp.dataset.CityDataSource
 import com.selvaganesh.randomcityapp.utils.CustomToolbar
 import com.selvaganesh.randomcityapp.utils.MapScreen
@@ -31,7 +32,7 @@ fun DetailedScreen(navController: NavController, viewModel: DetailedScreenViewMo
 
     LaunchedEffect(Unit) {
         viewModel.getCityDetails(
-            countryDetails?.cityName!!, "AIzaSyA7NwwXqgDj16wO9Rp5VDfNTm41XFySoeM"
+            countryDetails?.cityName!!, Constants.MAP_API_KEY
         )
     }
 
@@ -49,8 +50,8 @@ fun DetailedScreen(navController: NavController, viewModel: DetailedScreenViewMo
                 .fillMaxSize(), contentAlignment = Alignment.TopStart
         ) {
             dataSet?.let {
-                viewModel.insertData(countryDetails?.cityName,it)
-                MapScreen(it,countryDetails?.cityName)
+                viewModel.insertData(countryDetails?.cityName, it)
+                MapScreen(it, countryDetails?.cityName)
             }
         }
     }
